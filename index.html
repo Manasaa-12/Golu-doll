@@ -156,10 +156,17 @@ function stopAll() {
   if (currentAudio) { currentAudio.pause(); currentAudio = null; }
 }
 
+/* Each spoken answer gets a number. Old, late callbacks are ignored,
+   so the name can never play twice. */
+let speakToken = 0;
+function isCurrent(t) { return t === speakToken; }
+
 /* ---------- Last resort: English name ---------- */
-function speakEnglish(item) {
+function speakEnglish(item, t) {
+  if (!isCurrent(t)) return;
   const synth = window.speechSynthesis;
   if (!synth) return;
+  synth.cancel();
   const v = pickEnglishVoice();
   const u = new SpeechSynthesisUtterance(item.en);
   if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = "en-IN"; }
@@ -170,18 +177,22 @@ function speakEnglish(item) {
 }
 
 /* ---------- Tamil voice from the internet (boosted volume) ---------- */
-function speakOnline(item) {
+function speakOnline(item, t) {
+  if (!isCurrent(t)) return;
   const url = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ta&q=" +
               encodeURIComponent(item.ta);
+  let fellBack = false;   /* make sure only ONE fallback ever runs */
 
   function playPlain() {
+    if (fellBack || !isCurrent(t)) return;
+    fellBack = true;
     const a = new Audio(url);
     a.volume = 1;
     currentAudio = a;
     a.onplaying = function () { voiceStarted = true; setStatus("Voice: Tamil (online)"); };
-    a.onerror = function () { speakEnglish(item); };
+    a.onerror = function () { speakEnglish(item, t); };
     const p = a.play();
-    if (p && p.catch) p.catch(function () { speakEnglish(item); });
+    if (p && p.catch) p.catch(function () { speakEnglish(item, t); });
   }
 
   try {
@@ -201,9 +212,9 @@ function speakOnline(item) {
     gain.connect(audioCtx.destination);
 
     a.onplaying = function () { voiceStarted = true; setStatus("Voice: Tamil (online, boosted)"); };
-    a.onerror = function () { playPlain(); };
+    a.onerror = function () { a.pause(); playPlain(); };
     const p = a.play();
-    if (p && p.catch) p.catch(function () { playPlain(); });
+    if (p && p.catch) p.catch(function () { a.pause(); playPlain(); });
   } catch (err) {
     playPlain();
   }
@@ -212,6 +223,7 @@ function speakOnline(item) {
 /* ---------- Main speak function ---------- */
 function speakNow(num) {
   const item = dolls[num];
+  const t = ++speakToken;      /* new answer: cancels everything older */
   voiceStarted = false;
   stopAll();
   loadVoices();
@@ -225,13 +237,16 @@ function speakNow(num) {
     u.rate = 0.85;
     u.pitch = 1.05;
     u.onstart = function () { voiceStarted = true; setStatus("Voice: " + tv.name); };
-    u.onerror = function () { speakOnline(item); };
+    u.onerror = function (e) {
+      if (e.error === "canceled" || e.error === "interrupted") return;
+      speakOnline(item, t);
+    };
     window.speechSynthesis.speak(u);
     setTimeout(function () {
       if (window.speechSynthesis.paused) window.speechSynthesis.resume();
     }, 100);
   } else {
-    speakOnline(item);
+    speakOnline(item, t);
   }
 }
 
@@ -364,7 +379,11 @@ function startListening() {
       return;
     }
     if (answered && lastNum) {
-      setTimeout(function () { if (!voiceStarted) speakNow(lastNum); }, 800);
+      const t0 = speakToken;
+      setTimeout(function () {
+        /* Retry once, only if this answer is still current and never started */
+        if (t0 === speakToken && !voiceStarted) speakNow(lastNum);
+      }, 2500);
     }
   };
 
