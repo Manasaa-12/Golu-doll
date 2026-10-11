@@ -1,88 +1,344 @@
+
 <!DOCTYPE html>
 <html lang="ta-IN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Golu Voice Guide</title>
+
 <style>
 * { box-sizing: border-box; }
+
 body {
-  margin: 0; padding: 20px; min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
-  background: #fff5e6; text-align: center;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff5e6;
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Arial, sans-serif;
 }
+
 .card {
-  width: 100%; max-width: 500px; padding: 30px 20px;
-  background: #fff; border: 3px solid #ff9933; border-radius: 25px;
+  width: 100%;
+  max-width: 500px;
+  padding: 30px 20px;
+  background: #fff;
+  border: 3px solid #ff9933;
+  border-radius: 25px;
   box-shadow: 0 10px 30px rgba(230,138,0,.15);
 }
-h1 { margin: 0 0 8px; color: #d35400; font-size: 30px; }
-.subtitle { margin: 0 0 24px; color: #666; font-size: 16px; line-height: 1.5; }
+
+h1 {
+  margin: 0 0 8px;
+  color: #d35400;
+  font-size: 30px;
+}
+
+.subtitle {
+  margin: 0 0 24px;
+  color: #666;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
 #micButton {
-  width: 150px; height: 150px; border: 0; border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  border: 0;
+  border-radius: 50%;
   background: linear-gradient(135deg, #ff9933, #d35400);
-  color: #fff; font-size: 56px; cursor: pointer;
-  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  color: #fff;
+  font-size: 56px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   box-shadow: 0 8px 25px rgba(211,84,0,.4);
 }
+
 #micButton:active { transform: scale(.93); }
+
 #micButton.listening {
   background: linear-gradient(135deg, #e74c3c, #c0392b);
   animation: pulse 1.2s infinite;
 }
-@keyframes pulse { 50% { transform: scale(1.06); } }
-#instruction { margin-top: 14px; color: #ff9933; font-size: 17px; font-weight: bold; }
+
+@keyframes pulse {
+  50% { transform: scale(1.06); }
+}
+
+#instruction {
+  margin-top: 14px;
+  color: #ff9933;
+  font-size: 17px;
+  font-weight: bold;
+}
+
 #output {
-  min-height: 100px; margin-top: 16px; padding: 8px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  color: #800000; font-size: 28px; font-weight: bold; line-height: 1.4;
+  min-height: 100px;
+  margin-top: 16px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #800000;
+  font-size: 28px;
+  font-weight: bold;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
-#output small { margin-top: 4px; color: #a65; font-size: 17px; font-weight: normal; }
+
+#output small {
+  margin-top: 4px;
+  color: #a65;
+  font-size: 17px;
+  font-weight: normal;
+}
+
 #hearBtn {
-  display: none; margin: 0 auto 10px; padding: 14px 26px;
-  border: 0; border-radius: 12px; background: #d35400; color: #fff;
-  font-size: 18px; font-weight: bold; cursor: pointer;
+  display: none;
+  margin: 0 auto 10px;
+  padding: 14px 26px;
+  border: 0;
+  border-radius: 12px;
+  background: #d35400;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
 }
-#status { min-height: 36px; margin-top: 6px; color: #888; font-size: 13px; line-height: 1.5; }
-.hint { margin-top: 16px; color: #999; font-size: 14px; line-height: 1.5; }
+
+#status {
+  min-height: 36px;
+  margin-top: 6px;
+  color: #888;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.hint {
+  margin-top: 16px;
+  color: #999;
+  font-size: 14px;
+  line-height: 1.7;
+}
 </style>
 </head>
+
 <body>
 <div class="card">
-  <h1>🪔 Golu Voice Guide 🪔</h1>
-  <p class="subtitle">Click the microphone and say a number from one to six.</p>
 
-  <button id="micButton" type="button" aria-label="Start listening">🎤</button>
+  <h1>🪔 Golu Voice Guide 🪔</h1>
+
+  <p class="subtitle">
+    Click the microphone and say a number from one to thirty-one.
+  </p>
+
+  <button id="micButton" type="button"
+          aria-label="Start listening">🎤</button>
+
   <div id="instruction">Click to Ask</div>
+
   <div id="output">Click the microphone to begin...</div>
-  <button id="hearBtn" type="button">🔊 Hear it again</button>
+
+  <button id="hearBtn" type="button">
+    🔊 Hear it again
+  </button>
+
   <div id="status"></div>
 
-  <div class="hint">Tip: say “number one”, “number two” and so on.</div>
+  <div class="hint">
+    Tip: Say "number one", "number ten", "number twenty one",
+    or "number thirty one".
+  </div>
+
 </div>
 
 <script>
-/* Tamil is spoken; English is shown on screen */
+/* ==========================================
+   GOLU DOLLS
+   Tamil is spoken; English is shown on screen
+   ========================================== */
+
 const dolls = {
-  "1": { ta: "விநாயகர்",        en: "Lord Vinayagar" },
-  "2": { ta: "துர்க்கை",          en: "Goddess Durga" },
-  "3": { ta: "லட்சுமி",          en: "Goddess Lakshmi" },
-  "4": { ta: "சரஸ்வதி",          en: "Goddess Saraswati" },
-  "5": { ta: "வெங்கடாசலபதி",    en: "Lord Venkatachalapathy" },
-  "6": { ta: "அலமேலு மங்கை",    en: "Goddess Alamelu Manga" }
+  "1": {
+    ta: "ஆண்டாள் ரங்கமன்னார்",
+    en: "Andal and Rangamannar"
+  },
+  "2": {
+    ta: "பூரி ஜெகன்னாதர்",
+    en: "Puri Jagannath"
+  },
+  "3": {
+    ta: "கர்பாரக்ஷாம்பிகை",
+    en: "Garbharakshambigai"
+  },
+  "4": {
+    ta: "லலிதாம்பிகை",
+    en: "Goddess Lalithambigai"
+  },
+  "5": {
+    ta: "கமலாம்பிகை",
+    en: "Goddess Kamalambigai"
+  },
+  "6": {
+    ta: "கொலாப்பூர் மகாலட்சுமி",
+    en: "Kolhapur Mahalakshmi"
+  },
+  "7": {
+    ta: "பூவராகப்பெருமாள்",
+    en: "Bhuvaraha Perumal"
+  },
+  "8": {
+    ta: "உலகளந்த பெருமாள்",
+    en: "Ulagalanda Perumal"
+  },
+  "9": {
+    ta: "புவனேஸ்வரி அம்மன்",
+    en: "Goddess Bhuvaneshwari"
+  },
+  "10": {
+    ta: "வைரமுடி பெருமாள்",
+    en: "Vairamudi Perumal"
+  },
+  "11": {
+    ta: "குலசை முத்தாரம்மன் ஞானமூர்த்தீஸ்வரர்",
+    en: "Kulasei Mutharamman and Gnanamoorthiswarar"
+  },
+  "12": {
+    ta: "நவகுஞ்சரம்",
+    en: "Navagunjara"
+  },
+  "13": {
+    ta: "அய்யனார் பூர்ணகலா புஷ்கலா",
+    en: "Ayyanar, Poornakala and Pushkala"
+  },
+  "14": {
+    ta: "பிரத்யங்கிரா தேவி",
+    en: "Goddess Pratyangira"
+  },
+  "15": {
+    ta: "திருவண்ணாமலை அண்ணாமலையப்பன் உண்ணாமலையம்மன்",
+    en: "Annamalaiyar and Unnamulai Amman"
+  },
+  "16": {
+    ta: "வாராஹி அம்மன்",
+    en: "Goddess Varahi"
+  },
+  "17": {
+    ta: "தத்தாத்ரேயர்",
+    en: "Lord Dattatreya"
+  },
+  "18": {
+    ta: "திருநெல்வேலி நெல்லையப்பர் காந்திமதி",
+    en: "Nellaiappar and Gandhimathi Amman"
+  },
+  "19": {
+    ta: "அர்த்தநாரீஸ்வரர்",
+    en: "Lord Ardhanareeswarar"
+  },
+  "20": {
+    ta: "சரபேஸ்வரர்",
+    en: "Lord Sarabeshwarar"
+  },
+  "21": {
+    ta: "தன்வந்திரி",
+    en: "Lord Dhanvantari"
+  },
+  "22": {
+    ta: "பாண்டுரங்கன் ருக்மணி",
+    en: "Panduranga and Rukmini"
+  },
+  "23": {
+    ta: "கஜேந்திர மோட்சம்",
+    en: "Gajendra Moksha"
+  },
+  "24": {
+    ta: "ஏஜிபுரா விஸ்வரூப பெருமாள்",
+    en: "Ejipura Vishwaroopa Perumal"
+  },
+  "25": {
+    ta: "ஆதிசங்கரர்",
+    en: "Adi Shankaracharya"
+  },
+  "26": {
+    ta: "பாலாம்பிகை",
+    en: "Goddess Balambigai"
+  },
+  "27": {
+    ta: "மகாபெரியவா",
+    en: "Mahaperiyava"
+  },
+  "28": {
+    ta: "காசி விசாலாட்சி",
+    en: "Kashi Vishalakshi"
+  },
+  "29": {
+    ta: "கன்னியாகுமரி அம்மன்",
+    en: "Goddess Kanyakumari"
+  },
+  "30": {
+    ta: "காஞ்சி காமாக்ஷி",
+    en: "Goddess Kanchi Kamakshi"
+  },
+  "31": {
+    ta: "கொல்கத்தா காளி",
+    en: "Goddess Kali of Kolkata"
+  }
 };
+
+
+/* ==========================================
+   NUMBER WORDS
+   ========================================== */
 
 const words = {
-  one: "1", won: "1", wan: "1",
-  two: "2", to: "2", too: "2", tu: "2",
-  three: "3", tree: "3", free: "3",
-  four: "4", for: "4", fore: "4",
-  five: "5", fife: "5",
-  six: "6", sex: "6", sick: "6", sicks: "6"
+  "one": "1", "won": "1", "wan": "1",
+  "two": "2", "to": "2", "too": "2", "tu": "2",
+  "three": "3", "tree": "3", "free": "3",
+  "four": "4", "for": "4", "fore": "4",
+  "five": "5", "fife": "5",
+  "six": "6", "sicks": "6", "sick": "6",
+
+  "seven": "7",
+  "eight": "8", "ate": "8",
+  "nine": "9",
+  "ten": "10",
+  "eleven": "11",
+  "twelve": "12",
+  "thirteen": "13",
+  "fourteen": "14",
+  "fifteen": "15",
+  "sixteen": "16",
+  "seventeen": "17",
+  "eighteen": "18",
+  "nineteen": "19",
+  "twenty": "20",
+
+  "twenty one": "21",
+  "twenty two": "22",
+  "twenty three": "23",
+  "twenty four": "24",
+  "twenty five": "25",
+  "twenty six": "26",
+  "twenty seven": "27",
+  "twenty eight": "28",
+  "twenty nine": "29",
+
+  "thirty": "30",
+  "thirty one": "31"
 };
 
-const BOOST = 3;   /* online voice loudness: 1 = normal, 3 = three times louder */
+
+/* ==========================================
+   SETTINGS
+   ========================================== */
+
+const BOOST = 3;
 
 const micButton = document.getElementById("micButton");
 const instruction = document.getElementById("instruction");
@@ -96,164 +352,357 @@ let voiceStarted = false;
 let voices = [];
 let currentAudio = null;
 let audioCtx = null;
+let recognition = null;
 
-function setStatus(t) { statusEl.innerText = t; console.log(t); }
-
-/* ---------- Voices installed on this computer ---------- */
-function loadVoices() {
-  if (window.speechSynthesis) voices = window.speechSynthesis.getVoices();
+function setStatus(message) {
+  statusEl.innerText = message;
+  console.log(message);
 }
-if (window.speechSynthesis) {
+
+
+/* ==========================================
+   AVAILABLE SPEECH VOICES
+   ========================================== */
+
+function loadVoices() {
+  if ("speechSynthesis" in window) {
+    voices = window.speechSynthesis.getVoices();
+  }
+}
+
+if ("speechSynthesis" in window) {
   loadVoices();
   window.speechSynthesis.onvoiceschanged = loadVoices;
 }
-function langOf(v) { return v.lang.replace("_", "-").toLowerCase(); }
-function isMale(v) { return v.name.toLowerCase().includes("valluvar"); }
+
+function langOf(voice) {
+  return voice.lang.replace("_", "-").toLowerCase();
+}
+
+function isMale(voice) {
+  return voice.name.toLowerCase().includes("valluvar");
+}
 
 function pickTamilVoice() {
-  const tamil = voices.filter(function (v) { return langOf(v).startsWith("ta"); });
-  return tamil.find(function (v) { return !isMale(v); }) || tamil[0] || null;
+  const tamilVoices = voices.filter(function(voice) {
+    return langOf(voice).startsWith("ta");
+  });
+
+  return tamilVoices.find(function(voice) {
+    return !isMale(voice);
+  }) || tamilVoices[0] || null;
 }
+
 function pickEnglishVoice() {
-  const indian = voices.filter(function (v) { return langOf(v) === "en-in"; });
-  return indian.find(function (v) { return !isMale(v); }) || indian[0] || null;
+  const indianVoices = voices.filter(function(voice) {
+    return langOf(voice) === "en-in";
+  });
+
+  return indianVoices.find(function(voice) {
+    return !isMale(voice);
+  }) || indianVoices[0] || null;
 }
 
-/* ---------- Stop anything already playing ---------- */
+
+/* ==========================================
+   STOP CURRENT AUDIO
+   ========================================== */
+
 function stopAll() {
-  if (window.speechSynthesis) window.speechSynthesis.cancel();
-  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-}
-
-/* ---------- English fallback (last resort) ---------- */
-function speakEnglish(item) {
-  const synth = window.speechSynthesis;
-  if (!synth) return;
-  const v = pickEnglishVoice();
-  const u = new SpeechSynthesisUtterance(item.en);
-  if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = "en-IN"; }
-  u.volume = 1; u.rate = 0.9;
-  u.onstart = function () { voiceStarted = true; };
-  synth.speak(u);
-  setStatus("Tamil voice unavailable – spoke English instead");
-}
-
-/* ---------- Tamil from the internet (boosted volume) ---------- */
-function speakOnline(item) {
-  const url = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ta&q=" +
-              encodeURIComponent(item.ta);
-
-  /* Normal playback, used if the boost is blocked */
-  function playPlain() {
-    const a = new Audio(url);
-    a.volume = 1;
-    currentAudio = a;
-    a.onplaying = function () { voiceStarted = true; setStatus("Voice: Tamil (online, normal volume)"); };
-    a.onerror = function () { speakEnglish(item); };
-    const p = a.play();
-    if (p && p.catch) p.catch(function () { speakEnglish(item); });
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
   }
 
-  /* Boosted playback */
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.removeAttribute("src");
+    currentAudio = null;
+  }
+}
+
+
+/* ==========================================
+   ENGLISH FALLBACK VOICE
+   ========================================== */
+
+function speakEnglish(item) {
+  if (!("speechSynthesis" in window)) {
+    setStatus("Speech is not supported on this device.");
+    return;
+  }
+
+  const voice = pickEnglishVoice();
+  const utterance = new SpeechSynthesisUtterance(item.en);
+
+  if (voice) {
+    utterance.voice = voice;
+    utterance.lang = voice.lang;
+  } else {
+    utterance.lang = "en-IN";
+  }
+
+  utterance.volume = 1;
+  utterance.rate = 0.9;
+
+  utterance.onstart = function() {
+    voiceStarted = true;
+    setStatus("Voice: English fallback");
+  };
+
+  utterance.onerror = function() {
+    setStatus("Unable to play voice. Please try again.");
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+
+/* ==========================================
+   ONLINE TAMIL VOICE
+   ========================================== */
+
+function speakOnline(item) {
+  const url =
+    "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ta&q=" +
+    encodeURIComponent(item.ta);
+
+  function playPlain() {
+    const audio = new Audio(url);
+    audio.volume = 1;
+    currentAudio = audio;
+
+    audio.onplaying = function() {
+      voiceStarted = true;
+      setStatus("Voice: Tamil (online, normal volume)");
+    };
+
+    audio.onerror = function() {
+      speakEnglish(item);
+    };
+
+    const promise = audio.play();
+
+    if (promise && promise.catch) {
+      promise.catch(function() {
+        speakEnglish(item);
+      });
+    }
+  }
+
   try {
-    const a = new Audio();
-    a.crossOrigin = "anonymous";
-    a.src = url;
-    currentAudio = a;
+    const audio = new Audio();
+    audio.crossOrigin = "anonymous";
+    audio.src = url;
+    currentAudio = audio;
 
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!audioCtx) audioCtx = new AC();
-    if (audioCtx.state === "suspended") audioCtx.resume();
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext;
 
-    const source = audioCtx.createMediaElementSource(a);
+    if (!AudioContextClass) {
+      playPlain();
+      return;
+    }
+
+    if (!audioCtx) {
+      audioCtx = new AudioContextClass();
+    }
+
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume().catch(function() {});
+    }
+
+    const source = audioCtx.createMediaElementSource(audio);
     const gain = audioCtx.createGain();
+
     gain.gain.value = BOOST;
+
     source.connect(gain);
     gain.connect(audioCtx.destination);
 
-    a.onplaying = function () { voiceStarted = true; setStatus("Voice: Tamil (online, boosted)"); };
-    a.onerror = function () { playPlain(); };
-    const p = a.play();
-    if (p && p.catch) p.catch(function () { playPlain(); });
-  } catch (err) {
+    audio.onplaying = function() {
+      voiceStarted = true;
+      setStatus("Voice: Tamil (online, boosted)");
+    };
+
+    audio.onerror = function() {
+      if (currentAudio === audio) {
+        currentAudio = null;
+        playPlain();
+      }
+    };
+
+    const promise = audio.play();
+
+    if (promise && promise.catch) {
+      promise.catch(function() {
+        if (currentAudio === audio) {
+          currentAudio = null;
+          playPlain();
+        }
+      });
+    }
+  } catch (error) {
     playPlain();
   }
 }
 
-/* ---------- Main speak function ---------- */
+
+/* ==========================================
+   MAIN SPEAK FUNCTION
+   ========================================== */
+
 function speakNow(item) {
   voiceStarted = false;
   stopAll();
   loadVoices();
 
-  const tv = pickTamilVoice();
-  if (tv && window.speechSynthesis) {
-    const u = new SpeechSynthesisUtterance(item.ta);
-    u.voice = tv;
-    u.lang = tv.lang;
-    u.volume = 1;
-    u.rate = 0.85;
-    u.pitch = 1.05;
-    u.onstart = function () { voiceStarted = true; setStatus("Voice: " + tv.name); };
-    u.onerror = function () { speakOnline(item); };
-    window.speechSynthesis.speak(u);
-    setTimeout(function () {
-      if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+  const tamilVoice = pickTamilVoice();
+
+  if (tamilVoice && "speechSynthesis" in window) {
+    const utterance = new SpeechSynthesisUtterance(item.ta);
+
+    utterance.voice = tamilVoice;
+    utterance.lang = tamilVoice.lang;
+    utterance.volume = 1;
+    utterance.rate = 0.85;
+    utterance.pitch = 1.05;
+
+    utterance.onstart = function() {
+      voiceStarted = true;
+      setStatus("Voice: " + tamilVoice.name);
+    };
+
+    utterance.onerror = function(event) {
+      if (event.error !== "canceled" &&
+          event.error !== "interrupted") {
+        speakOnline(item);
+      }
+    };
+
+    window.speechSynthesis.speak(utterance);
+
+    setTimeout(function() {
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
     }, 100);
   } else {
     speakOnline(item);
   }
 }
 
-function showAnswer(d) {
-  lastSpeech = d;
+
+/* ==========================================
+   DISPLAY ANSWER
+   ========================================== */
+
+function showAnswer(item) {
+  lastSpeech = item;
   output.innerHTML = "";
-  output.appendChild(document.createTextNode(d.ta));
-  const s = document.createElement("small");
-  s.textContent = d.en;
-  output.appendChild(s);
+
+  const tamilName = document.createTextNode(item.ta);
+  output.appendChild(tamilName);
+
+  const englishName = document.createElement("small");
+  englishName.textContent = item.en;
+  output.appendChild(englishName);
+
   hearBtn.style.display = "inline-block";
 }
 
-hearBtn.addEventListener("click", function () {
-  if (lastSpeech) speakNow(lastSpeech);
+hearBtn.addEventListener("click", function() {
+  if (lastSpeech) {
+    speakNow(lastSpeech);
+  }
 });
 
-/* ---------- Find number ---------- */
+
+/* ==========================================
+   FIND NUMBER FROM SPEECH
+   Supports digits and phrases up to 31
+   ========================================== */
+
 function findNumber(texts) {
   for (const text of texts) {
-    const tokens = text.toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/);
-    for (const t of tokens) {
-      if (/^[1-6]$/.test(t)) return t;
-      if (Object.prototype.hasOwnProperty.call(words, t)) return words[t];
+    const tokens = text.toLowerCase()
+      .replace(/[^a-z0-9 ]/g, " ")
+      .split(/\s+/)
+      .filter(Boolean);
+
+    for (let i = 0; i < tokens.length; i++) {
+
+      // Direct digit: "number 25"
+      if (/^\d+$/.test(tokens[i]) &&
+          Object.prototype.hasOwnProperty.call(dolls, tokens[i])) {
+        return tokens[i];
+      }
+
+      // Match longer phrases before shorter words.
+      // Examples: "twenty one", "thirty one".
+      for (let size = 3; size >= 1; size--) {
+        const phrase = tokens.slice(i, i + size).join(" ");
+
+        if (Object.prototype.hasOwnProperty.call(words, phrase)) {
+          const number = words[phrase];
+
+          if (Object.prototype.hasOwnProperty.call(dolls, number)) {
+            return number;
+          }
+        }
+      }
     }
   }
+
   return null;
 }
 
-/* ---------- Recognition ---------- */
+
+/* ==========================================
+   RESET MICROPHONE
+   ========================================== */
+
 function reset() {
   listening = false;
   micButton.classList.remove("listening");
   instruction.innerText = "Click to Ask";
 }
 
+
+/* ==========================================
+   START VOICE RECOGNITION
+   ========================================== */
+
 function startListening() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    output.innerText = "Voice recognition is not supported. Please use Google Chrome.";
+  const SpeechRecognitionClass =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognitionClass) {
+    output.innerText =
+      "Voice recognition is not supported. Please use Google Chrome.";
+    setStatus("Try Chrome with microphone permission enabled.");
     return;
   }
+
   stopAll();
 
-  /* Create the audio engine now, while the click is fresh, so the boost works later */
   try {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (AC && !audioCtx) audioCtx = new AC();
-    if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
-  } catch (err) {}
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext;
 
-  const rec = new SR();
+    if (AudioContextClass && !audioCtx) {
+      audioCtx = new AudioContextClass();
+    }
+
+    if (audioCtx && audioCtx.state === "suspended") {
+      audioCtx.resume().catch(function() {});
+    }
+  } catch (error) {
+    // Speech can still work without the volume boost.
+  }
+
+  const rec = new SpeechRecognitionClass();
+  recognition = rec;
+
   rec.lang = "en-IN";
   rec.continuous = false;
   rec.interimResults = true;
@@ -262,7 +711,7 @@ function startListening() {
   let answered = false;
   let gotAnything = false;
 
-  rec.onstart = function () {
+  rec.onstart = function() {
     listening = true;
     micButton.classList.add("listening");
     instruction.innerText = "Listening...";
@@ -271,58 +720,100 @@ function startListening() {
     setStatus("Mic: listening");
   };
 
-  rec.onresult = function (e) {
+  rec.onresult = function(event) {
     gotAnything = true;
+
     const heard = [];
-    for (let i = 0; i < e.results.length; i++) {
-      for (let j = 0; j < e.results[i].length; j++) {
-        heard.push(e.results[i][j].transcript);
+
+    for (let i = 0; i < event.results.length; i++) {
+      for (let j = 0; j < event.results[i].length; j++) {
+        heard.push(event.results[i][j].transcript);
       }
     }
+
     setStatus('Heard: "' + heard[0] + '"');
+
     if (answered) return;
 
-    const n = findNumber(heard);
-    const isFinal = e.results[e.results.length - 1].isFinal;
+    const number = findNumber(heard);
+    const lastResult = event.results[event.results.length - 1];
+    const isFinal = lastResult.isFinal;
 
-    if (n) {
+    if (number) {
       answered = true;
-      showAnswer(dolls[n]);
-      speakNow(dolls[n]);
-      try { rec.stop(); } catch (err) {}
+
+      showAnswer(dolls[number]);
+      speakNow(dolls[number]);
+
+      try {
+        rec.stop();
+      } catch (error) {}
     } else if (isFinal) {
       answered = true;
-      output.innerText = "I didn't recognise that number. Please try again.";
+      output.innerText =
+        "I didn't recognise that number. Please try again.";
+      hearBtn.style.display = "none";
     }
   };
 
-  rec.onerror = function (e) {
-    if (e.error === "not-allowed") output.innerText = "Please allow microphone access.";
-    else if (e.error === "no-speech") output.innerText = "I didn't hear you. Please try again.";
-    else output.innerText = "Microphone error. Please try again.";
-    setStatus("Mic error: " + e.error);
+  rec.onerror = function(event) {
+    if (event.error === "not-allowed" ||
+        event.error === "service-not-allowed") {
+      output.innerText = "Please allow microphone access.";
+    } else if (event.error === "no-speech") {
+      output.innerText = "I didn't hear you. Please try again.";
+    } else if (event.error === "network") {
+      output.innerText =
+        "Voice recognition needs an internet connection. Please try again.";
+    } else {
+      output.innerText = "Microphone error. Please try again.";
+    }
+
+    setStatus("Mic error: " + event.error);
   };
 
-  rec.onend = function () {
+  rec.onend = function() {
     reset();
+
+    if (recognition === rec) {
+      recognition = null;
+    }
+
     if (!gotAnything) {
-      output.innerText = "I didn't catch that. Try saying “number one”.";
+      output.innerText =
+        'I didn’t catch that. Try saying "number one".';
       return;
     }
-    /* If nothing started playing, try again now the mic is closed */
+
+    // Retry voice playback if nothing started.
     if (answered && lastSpeech) {
-      setTimeout(function () {
-        if (!voiceStarted) speakNow(lastSpeech);
+      setTimeout(function() {
+        if (!voiceStarted) {
+          speakNow(lastSpeech);
+        }
       }, 800);
     }
   };
 
-  try { rec.start(); } catch (err) { setStatus("Start error"); reset(); }
+  try {
+    rec.start();
+  } catch (error) {
+    setStatus("Could not start microphone. Please try again.");
+    reset();
+  }
 }
 
-micButton.addEventListener("click", function () {
-  if (!listening) startListening();
+
+/* ==========================================
+   MICROPHONE BUTTON
+   ========================================== */
+
+micButton.addEventListener("click", function() {
+  if (!listening) {
+    startListening();
+  }
 });
+
 </script>
 </body>
 </html>
